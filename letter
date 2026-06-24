@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Letter for Pallavi 💌</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:       #c9954c;
+      --gold-light: #f0d080;
+      --rose:       #e8799a;
+      --rose-light: #ffb3c6;
+      --cream:      #fdf6ee;
+      --deep:       #1a0a10;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cormorant Garamond', serif;
+      background: var(--deep);
+      color: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── PAGE ENTRANCE ── */
+    #page2 {
+      opacity: 0;
+      transform: scale(.96) translateY(20px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    #page2.in { opacity:1; transform:none; }
+
+    /* ── CANVAS ── */
+    canvas { position: fixed; inset: 0; pointer-events: none; }
+    #fw-cvs { z-index: 10; }
+    #cf-cvs { z-index: 11; }
+
+    /* ── FLOATERS ── */
+    #balloons, #petals, #hearts {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    #balloons { z-index: 12; }
+    #petals   { z-index: 9; }
+    #hearts   { z-index: 13; }
+
+    .balloon {
+      position: absolute; bottom: -120px;
+      animation: riseUp linear infinite;
+    }
+    @keyframes riseUp {
+      0%   { opacity:.85; transform:translateY(0) translateX(0); }
+      50%  { transform:translateY(-50vh) translateX(18px); }
+      100% { opacity:0; transform:translateY(-110vh) translateX(-10px); }
+    }
+    .petal {
+      position: absolute; top: -50px;
+      animation: petalFall linear infinite;
+    }
+    @keyframes petalFall {
+      0%   { opacity:0; transform:translateY(-50px) rotate(0deg) translateX(0); }
+      10%  { opacity:.7; }
+      90%  { opacity:.4; }
+      100% { opacity:0; transform:translateY(110vh) rotate(720deg) translateX(60px); }
+    }
+    .float-heart {
+      position: absolute; opacity: 0;
+      animation: heartFloat ease-in-out forwards;
+    }
+    @keyframes heartFloat {
+      0%   { opacity:0; transform:translateY(0) scale(.5); }
+      20%  { opacity:.9; transform:translateY(-20vh) scale(1); }
+      80%  { opacity:.5; }
+      100% { opacity:0; transform:translateY(-100vh) scale(1.2); }
+    }
+
+    /* ── MUSIC BTN ── */
+    #music-btn {
+      position: fixed; bottom: 24px; right: 24px; z-index: 500;
+      width:52px; height:52px;
+      background: rgba(255,255,255,.07); backdrop-filter: blur(12px);
+      border:1px solid rgba(255,255,255,.15); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; font-size:1.4rem;
+      box-shadow: 0 0 20px rgba(201,149,76,.3);
+      transition: box-shadow .3s, transform .2s;
+    }
+    #music-btn:hover { transform:scale(1.1); box-shadow:0 0 35px rgba(201,149,76,.6); }
+    #music-btn.playing { animation: mpulse 1.5s ease-in-out infinite; }
+    @keyframes mpulse {
+      0%,100% { box-shadow:0 0 20px rgba(232,121,154,.4); }
+      50%      { box-shadow:0 0 45px rgba(232,121,154,.9),0 0 60px rgba(201,149,76,.4); }
+    }
+
+    /* ── BACK BUTTON ── */
+    #back-btn {
+      position: fixed; top: 20px; left: 20px; z-index: 400;
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .55rem 1.2rem;
+      background: rgba(255,255,255,.07); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.15); border-radius: 50px;
+      color: var(--cream); font-family: 'Lato', sans-serif;
+      font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; transition: background .2s, transform .2s;
+      text-decoration: none;
+    }
+    #back-btn:hover { background:rgba(255,255,255,.13); transform:translateX(-2px); }
+
+    /* ── LETTER SECTION ── */
+    #letter-section {
+      min-height: 100svh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 5rem 1.5rem 4rem;
+      position: relative;
+    }
+
+    /* bg glow */
+    .bg-glow {
+      position: absolute; width:600px; height:600px; border-radius:50%;
+      filter:blur(120px); opacity:.18; pointer-events:none; z-index:0;
+    }
+    .glow1 { background:radial-gradient(circle,var(--rose),transparent); top:-150px; right:-150px; }
+    .glow2 { background:radial-gradient(circle,var(--gold),transparent); bottom:-150px; left:-150px; }
+
+    /* section label */
+    .sec-label {
+      position: relative; z-index:2;
+      font-family:'Lato',sans-serif; font-size:.7rem;
+      letter-spacing:.35em; text-transform:uppercase;
+      color:var(--gold); opacity:.75; margin-bottom:.7rem;
+      animation: fadeUp .8s ease .2s both;
+    }
+    .sec-title {
+      position: relative; z-index:2;
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.8rem,5vw,3rem);
+      font-style:italic; font-weight:400;
+      color:var(--cream); margin-bottom:2.5rem; text-align:center;
+      animation: fadeUp .8s ease .35s both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:none;} }
+
+    /* ── LETTER CARD ── */
+    .letter-card {
+      position: relative; z-index:2;
+      max-width: 680px; width:100%;
+      animation: fadeUp .9s ease .5s both;
+    }
+    .letter-inner {
+      background: linear-gradient(145deg, #fdf8f0, #f6ece0);
+      border-radius: 4px; padding: 3rem 2.5rem 2.5rem;
+      box-shadow:
+        0 24px 64px rgba(0,0,0,.55),
+        0 0 0 1px rgba(201,149,76,.28),
+        5px 5px 0 rgba(201,149,76,.12),
+        10px 10px 0 rgba(201,149,76,.06);
+      position: relative;
+      background-image:
+        linear-gradient(145deg, #fdf8f0, #f6ece0),
+        repeating-linear-gradient(transparent, transparent 27px, rgba(201,149,76,.07) 27px, rgba(201,149,76,.07) 28px);
+    }
+    /* corner fold */
+    .letter-inner::after {
+      content:''; position:absolute; bottom:0; right:0;
+      border:20px solid transparent;
+      border-bottom-color:rgba(201,149,76,.25);
+      border-right-color:rgba(201,149,76,.25);
+    }
+    /* ornaments */
+    .orn { position:absolute; font-size:1.4rem; color:var(--rose); opacity:.35; }
+    .orn.tl { top:.9rem; left:.9rem; }
+    .orn.tr { top:.9rem; right:.9rem; }
+    .orn.bl { bottom:1.4rem; left:.9rem; }
+    .orn.br { bottom:1.4rem; right:1.4rem; }
+
+    .letter-sal {
+      font-family:'Dancing Script',cursive; font-size:1.5rem;
+      color:#7a3a50; margin-bottom:1.4rem;
+    }
+    #letter-body {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1rem,2.5vw,1.1rem);
+      line-height:1.95; color:#3d1e2a;
+      white-space:pre-wrap; min-height:80px;
+    }
+    .cursor {
+      display:inline-block; width:2px; height:1.05em;
+      background:var(--rose); margin-left:2px;
+      vertical-align:text-bottom;
+      animation:blink .7s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+    /* signature */
+    #signature {
+      margin-top:2rem;
+      opacity:0; transform:translateY(12px);
+      transition:opacity .8s ease,transform .8s ease;
+    }
+    #signature.show { opacity:1; transform:none; }
+    .sig-line { width:110px; height:1px; background:linear-gradient(90deg,var(--rose),var(--gold)); margin-bottom:.75rem; }
+    .sig-from { font-family:'Cormorant Garamond',serif; font-size:.95rem; font-style:italic; color:#7a3a50; }
+    .sig-name { font-family:'Dancing Script',cursive; font-size:2.1rem; color:#a03050; margin-top:.15rem; }
+
+    /* ── SURPRISE BUTTON ── */
+    #surprise-wrap {
+      position:relative; z-index:2;
+      text-align:center; margin-top:2.5rem;
+      opacity:0; transform:translateY(20px);
+      transition:opacity .7s ease,transform .7s ease;
+    }
+    #surprise-wrap.show { opacity:1; transform:none; }
+    .btn-surprise {
+      display:inline-flex; align-items:center; gap:.6rem;
+      padding:1.1rem 2.6rem;
+      background:linear-gradient(135deg,var(--rose),var(--gold));
+      color:#fff; font-family:'Lato',sans-serif;
+      font-size:1rem; letter-spacing:.12em;
+      border:none; border-radius:50px; cursor:pointer;
+      box-shadow:0 0 30px rgba(232,121,154,.5),0 8px 32px rgba(0,0,0,.3);
+      transition:transform .2s,box-shadow .3s;
+      position:relative; overflow:hidden;
+      animation:spulse 2.2s ease-in-out infinite;
+    }
+    @keyframes spulse {
+      0%,100% { box-shadow:0 0 30px rgba(232,121,154,.5),0 8px 32px rgba(0,0,0,.3); }
+      50%      { box-shadow:0 0 65px rgba(232,121,154,.9),0 0 90px rgba(201,149,76,.35),0 8px 32px rgba(0,0,0,.3); }
+    }
+    .btn-surprise::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
+    }
+    .btn-surprise:hover { transform:translateY(-3px) scale(1.04); }
+
+    /* ── FINAL OVERLAY ── */
+    #finale {
+      position:fixed; inset:0; z-index:200;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; padding:2rem;
+      pointer-events:none; opacity:0;
+    }
+    #finale.open { pointer-events:all; }
+    .finale-bg {
+      position:absolute; inset:0;
+      background:radial-gradient(ellipse at center,#2d1020 0%,#070105 100%);
+      opacity:0; transition:opacity .8s ease;
+    }
+    #finale.open .finale-bg { opacity:1; }
+    .finale-content {
+      position:relative; z-index:2;
+      opacity:0; transform:scale(.75) translateY(30px);
+      transition:opacity .9s ease .5s,transform .9s cubic-bezier(.22,1,.36,1) .5s;
+    }
+    #finale.open .finale-content { opacity:1; transform:none; }
+    .finale-emoji { font-size:4.5rem; margin-bottom:1rem; display:block; }
+    .finale-name {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(3rem,11vw,7rem);
+      font-style:italic;
+      background:linear-gradient(135deg,var(--gold-light),var(--rose-light),var(--gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text; margin-bottom:1.5rem;
+      animation:nameGlow 3s ease-in-out 1.5s infinite;
+    }
+    @keyframes nameGlow { 0%,100%{filter:brightness(1);} 50%{filter:brightness(1.3) drop-shadow(0 0 20px rgba(232,121,154,.6));} }
+    .finale-lines p {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.1rem,3vw,1.6rem);
+      color:var(--cream); opacity:0; transform:translateY(16px);
+      margin-bottom:.6rem;
+    }
+    .finale-lines p:nth-child(1) { animation:lineIn .7s ease forwards 2s; }
+    .finale-lines p:nth-child(2) { animation:lineIn .7s ease forwards 2.3s; font-style:italic; color:var(--rose-light); }
+    .finale-lines p:nth-child(3) { animation:lineIn .7s ease forwards 2.6s; font-family:'Dancing Script',cursive; font-size:clamp(1.3rem,4vw,2.2rem); color:var(--gold-light); }
+    @keyframes lineIn { to{opacity:1;transform:none;} }
+
+    .close-finale {
+      position:absolute; top:20px; right:20px;
+      background:rgba(255,255,255,.08); backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.15); border-radius:50%;
+      width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; font-size:1.1rem; color:var(--cream);
+      transition:background .2s;
+    }
+    .close-finale:hover { background:rgba(255,255,255,.18); }
+
+    @media(max-width:480px) {
+      .letter-inner { padding:2rem 1.2rem 2rem; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS -->
+  <canvas id="fw-cvs"></canvas>
+  <canvas id="cf-cvs"></canvas>
+
+  <!-- FLOATERS -->
+  <div id="balloons"></div>
+  <div id="petals"></div>
+  <div id="hearts"></div>
+
+  <!-- MUSIC -->
+  <div id="music-btn"><span id="music-icon">🎵</span></div>
+  <audio id="bg-music" loop src="assets/music/3.mp3"></audio>
+
+  <!-- BACK -->
+  <a id="back-btn" href="index.html">← Back</a>
+
+  <!-- ══════════ PAGE 2 ══════════ -->
+  <div id="page2">
+    <section id="letter-section">
+      <div class="bg-glow glow1"></div>
+      <div class="bg-glow glow2"></div>
+
+      <p class="sec-label">From the Heart</p>
+      <h2 class="sec-title">A Letter For You</h2>
+
+      <!-- LETTER CARD -->
+      <div class="letter-card">
+        <div class="letter-inner">
+          <span class="orn tl">❋</span>
+          <span class="orn tr">❋</span>
+
+          <div class="letter-sal">My Dearest Pallavi,</div>
+          <div id="letter-body"></div>
+
+          <!-- Signature -->
+          <div id="signature">
+            <div class="sig-line"></div>
+            <div class="sig-from">With Love, Your Anna,</div>
+            <div class="sig-name">Ganavi ❤️</div>
+          </div>
+
+          <span class="orn bl">❋</span>
+          <span class="orn br">❋</span>
+        </div>
+      </div>
+
+      <!-- Surprise button -->
+      <div id="surprise-wrap">
+        <button class="btn-surprise" id="surprise-btn">
+          <span>🎁</span> One Last Surprise <span>🎁</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════ FINALE OVERLAY ══════════ -->
+  <div id="finale">
+    <div class="finale-bg"></div>
+    <button class="close-finale" id="close-finale" title="Close">✕</button>
+    <div class="finale-content">
+      <span class="finale-emoji">🎂</span>
+      <div class="finale-name">Pallavi ❤️</div>
+      <div class="finale-lines">
+        <p>Thank you for being such an amazing sister.</p>
+        <p>You are loved more than you know.</p>
+        <p>Happy Birthday Once Again 🎂</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  'use strict';
+
+  /* ── CANVAS ── */
+  const fwCvs=document.getElementById('fw-cvs'), cfCvs=document.getElementById('cf-cvs');
+  const fwCtx=fwCvs.getContext('2d'), cfCtx=cfCvs.getContext('2d');
+  function resize(){ [fwCvs,cfCvs].forEach(c=>{c.width=window.innerWidth;c.height=window.innerHeight;}); }
+  resize(); window.addEventListener('resize',resize);
+
+  /* ── PAGE ENTRANCE ── */
+  requestAnimationFrame(()=>{ setTimeout(()=>document.getElementById('page2').classList.add('in'),80); });
+
+  /* ── MUSIC (continue from page 1 if possible) ── */
+  const music=document.getElementById('bg-music');
+  const musicBtn=document.getElementById('music-btn');
+  const musicIcon=document.getElementById('music-icon');
+  let musicOn=false, musicInited=false;
+
+  function tryMusic(){
+    if(musicInited) return; musicInited=true;
+    const savedTime=parseFloat(sessionStorage.getItem('musicTime')||'0');
+    music.currentTime=savedTime;
+    music.volume=0.42;
+    music.play().then(()=>{ musicOn=true; musicBtn.classList.add('playing'); }).catch(()=>{ musicInited=false; });
+  }
+  // Auto-resume if it was playing
+  if(sessionStorage.getItem('musicOn')==='1') setTimeout(tryMusic,400);
+
+  musicBtn.addEventListener('click',()=>{
+    if(!musicInited){ tryMusic(); return; }
+    if(musicOn){ music.pause(); musicOn=false; musicBtn.classList.remove('playing'); musicIcon.textContent='🔇'; }
+    else        { music.play(); musicOn=true; musicBtn.classList.add('playing'); musicIcon.textContent='🎵'; }
+  });
+  ['scroll','click','touchstart','keydown'].forEach(e=>document.addEventListener(e,tryMusic,{once:true}));
+
+  /* ── FIREWORKS ── */
+  let fwActive=false, rockets=[], fwParts=[];
+  class FWP {
+    constructor(x,y,color){
+      this.x=x;this.y=y;
+      const a=Math.random()*Math.PI*2,s=Math.random()*6+2;
+      this.vx=Math.cos(a)*s;this.vy=Math.sin(a)*s;
+      this.alpha=1;this.decay=Math.random()*.015+.008;
+      this.color=color;this.size=Math.random()*3+1;
+    }
+    update(){this.x+=this.vx;this.y+=this.vy;this.vy+=.12;this.vx*=.98;this.alpha-=this.decay;}
+    draw(c){c.globalAlpha=Math.max(0,this.alpha);c.fillStyle=this.color;c.shadowColor=this.color;c.shadowBlur=8;c.beginPath();c.arc(this.x,this.y,this.size,0,Math.PI*2);c.fill();c.shadowBlur=0;}
+  }
+  class Rocket {
+    constructor(){
+      this.x=Math.random()*window.innerWidth;this.y=window.innerHeight;
+      this.vy=-(Math.random()*8+10);this.vx=(Math.random()-.5)*3;
+      this.targetY=Math.random()*window.innerHeight*.45+50;this.done=false;
+      this.color=`hsl(${Math.random()*360},90%,65%)`;
+    }
+    update(p){ if(!this.done){this.x+=this.vx;this.y+=this.vy;if(this.y<=this.targetY){this.done=true;for(let i=0;i<100;i++)p.push(new FWP(this.x,this.y,this.color));}} }
+    draw(c){if(!this.done){c.globalAlpha=1;c.fillStyle=this.color;c.shadowColor=this.color;c.shadowBlur=10;c.beginPath();c.arc(this.x,this.y,3,0,Math.PI*2);c.fill();c.shadowBlur=0;}}
+  }
+  function fwLoop(){
+    fwCtx.clearRect(0,0,fwCvs.width,fwCvs.height);
+    rockets.forEach(r=>{r.update(fwParts);r.draw(fwCtx);}); rockets=rockets.filter(r=>!r.done);
+    fwParts.forEach(p=>{p.update();p.draw(fwCtx);}); fwParts=fwParts.filter(p=>p.alpha>.01);
+    if(fwActive||rockets.length||fwParts.length) requestAnimationFrame(fwLoop);
+    else fwCtx.clearRect(0,0,fwCvs.width,fwCvs.height);
+  }
+  function launchFW(count,interval){
+    fwActive=true; fwLoop(); let n=0;
+    for(let i=0;i<3;i++) setTimeout(()=>rockets.push(new Rocket()),i*200);
+    const t=setInterval(()=>{rockets.push(new Rocket());n++;if(n>=count){clearInterval(t);fwActive=false;}},interval);
+  }
+
+  /* ── CONFETTI ── */
+  const COLS=['#e8799a','#c9954c','#f0d080','#ffb3c6','#fff','#b388ff','#80d8ff'];
+  let cfParts=[], cfActive2=false;
+  class CF{
+    constructor(left){
+      const W=window.innerWidth;
+      this.x=left?Math.random()*W*.2:W-Math.random()*W*.2;this.y=-20;
+      this.vx=(left?3:-3)+(Math.random()-.5)*4;this.vy=Math.random()*3+3;
+      this.rot=Math.random()*360;this.rv=(Math.random()-.5)*10;
+      this.color=COLS[Math.floor(Math.random()*COLS.length)];
+      this.w=Math.random()*12+6;this.h=Math.random()*6+4;this.alpha=1;
+    }
+    update(){this.x+=this.vx;this.y+=this.vy;this.vy+=.07;this.rot+=this.rv;if(this.y>window.innerHeight*.8)this.alpha-=.02;}
+    draw(c){c.save();c.translate(this.x,this.y);c.rotate(this.rot*Math.PI/180);c.globalAlpha=Math.max(0,this.alpha);c.fillStyle=this.color;c.fillRect(-this.w/2,-this.h/2,this.w,this.h);c.restore();}
+  }
+  function cfLoop(){
+    cfCtx.clearRect(0,0,cfCvs.width,cfCvs.height);
+    cfParts.forEach(p=>{p.update();p.draw(cfCtx);}); cfParts=cfParts.filter(p=>p.alpha>0&&p.y<window.innerHeight+40);
+    if(cfActive2||cfParts.length) requestAnimationFrame(cfLoop);
+    else cfCtx.clearRect(0,0,cfCvs.width,cfCvs.height);
+  }
+  function launchCF(){
+    cfActive2=true; cfLoop();
+    let w=0;
+    const t=setInterval(()=>{
+      for(let i=0;i<25;i++){cfParts.push(new CF(true));cfParts.push(new CF(false));}
+      w++; if(w>50){cfActive2=false;clearInterval(t);}
+    },80);
+  }
+
+  /* ── BALLOONS ── */
+  const BAL=['🎈','🎈','🎀','🎊','🎉'];
+  const balEl=document.getElementById('balloons');
+  function mkBalloon(){
+    const el=document.createElement('div');el.className='balloon';
+    el.textContent=BAL[Math.floor(Math.random()*BAL.length)];
+    el.style.cssText=`left:${Math.random()*100}vw;font-size:${Math.random()*1.5+1.5}rem;animation-duration:${Math.random()*10+12}s;animation-delay:${Math.random()*5}s;`;
+    balEl.appendChild(el);setTimeout(()=>el.remove(),18000);
+  }
+  for(let i=0;i<6;i++) setTimeout(mkBalloon,i*700);
+  setInterval(mkBalloon,3000);
+
+  /* ── PETALS ── */
+  const PET=['🌸','🌺','🌹','🌷'];
+  const petEl=document.getElementById('petals');
+  function mkPetal(){
+    const el=document.createElement('div');el.className='petal';
+    el.textContent=PET[Math.floor(Math.random()*PET.length)];
+    el.style.cssText=`left:${Math.random()*100}vw;font-size:${Math.random()*.6+.9}rem;animation-duration:${Math.random()*8+8}s;animation-delay:${Math.random()*4}s;`;
+    petEl.appendChild(el);setTimeout(()=>el.remove(),16000);
+  }
+  for(let i=0;i<8;i++) setTimeout(mkPetal,i*500);
+  setInterval(mkPetal,2000);
+
+  /* ── HEARTS (finale) ── */
+  const heartEl=document.getElementById('hearts');
+  function launchHearts(){
+    let count=0;
+    const t=setInterval(()=>{
+      for(let i=0;i<3;i++){
+        const el=document.createElement('div');el.className='float-heart';
+        el.textContent=Math.random()>.5?'❤️':'💕';
+        el.style.cssText=`left:${Math.random()*100}vw;bottom:${Math.random()*20}vh;font-size:${Math.random()*1.5+1}rem;animation-duration:${Math.random()*3+3}s;`;
+        heartEl.appendChild(el);setTimeout(()=>el.remove(),7000);
+      }
+      count++;if(count>60)clearInterval(t);
+    },150);
+  }
+
+  /* ── TYPEWRITER ── */
+  const LETTER = `There is a girl in my life who has always been my biggest supporter. Even though she is younger than me, she takes care of me in ways that make me feel truly loved. Whenever I am hungry, she happily cooks for me. Sometimes she even feeds me herself, and those small moments mean more to me than words can express.
+
+She is the kind of person who always stands by my side. No matter what happens, she never lets me face things alone. If anyone speaks against me or treats me unfairly, she is always there to support me. Her care, affection, and loyalty have been constant throughout my life.
+
+People often say that a best friend is someone who understands you without explanation. I found that person in my own sister. She knows my strengths, my flaws, my struggles, and still chooses to love and support me every day.
+
+I feel fortunate because not everyone gets a sister who is also their closest friend. The countless memories, the laughter, the care, and the bond we share are things I will always treasure.
+
+And the girl in this story?
+
+It's you, Pallavi.
+
+Happy Birthday! I am truly lucky to have you as my sister, and more than that, as my best friend. ❤️`;
+
+  const bodyEl = document.getElementById('letter-body');
+  const sigEl  = document.getElementById('signature');
+  const surprWrap = document.getElementById('surprise-wrap');
+
+  function startTypewriter() {
+    let i=0;
+    const cursor=document.createElement('span'); cursor.className='cursor';
+    bodyEl.appendChild(cursor);
+    function type(){
+      if(i<LETTER.length){
+        const ch=LETTER[i];
+        cursor.insertAdjacentText('beforebegin',ch);
+        i++;
+        if(i%100===0) cursor.scrollIntoView({behavior:'smooth',block:'nearest'});
+        const pause = ch==='.'||ch==='!'||ch==='?' ? 400
+                    : ch===',' ? 120
+                    : ch==='\n' ? 200
+                    : 22;
+        setTimeout(type, pause);
+      } else {
+        cursor.remove();
+        setTimeout(()=>{
+          sigEl.classList.add('show');
+          setTimeout(()=>{ surprWrap.classList.add('show'); },1000);
+        },500);
+      }
+    }
+    type();
+  }
+
+  // Start typewriter after page animates in
+  setTimeout(startTypewriter, 900);
+
+  /* ── SURPRISE BUTTON ── */
+  document.getElementById('surprise-btn').addEventListener('click',()=>{
+    const finale=document.getElementById('finale');
+    finale.classList.add('open');
+    launchFW(50,200);
+    launchCF();
+    launchHearts();
+    tryMusic();
+  });
+
+  /* ── CLOSE FINALE ── */
+  document.getElementById('close-finale').addEventListener('click',()=>{
+    document.getElementById('finale').classList.remove('open');
+  });
+  </script>
+</body>
+</html>
